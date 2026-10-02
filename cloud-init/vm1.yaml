@@ -1,0 +1,38 @@
+#cloud-config
+hostname: vm1-server
+
+users:
+  - name: ady
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: [sudo]
+    shell: /bin/bash
+    ssh-authorized-keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKAU/mNRHc1pkYX+tS740zltGJcT22QoGMCMLZHcPUEn tech7774real@outlook.com
+
+package_update: true
+package_upgrade: true
+
+packages:
+  - net-tools
+  - curl
+  - vim
+  - htop
+  - openssh-server
+
+write_files:
+  - path: /etc/netplan/01-netcfg.yaml
+    permissions: '0644'
+    content: |
+      network:
+        version: 2
+        ethernets:
+          ens3:
+            dhcp4: no
+            addresses:
+              - 192.168.10.10/24
+            gateway4: 192.168.10.1
+            nameservers:
+              addresses: [8.8.8.8]
+
+runcmd:
+  - netplan apply
